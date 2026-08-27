@@ -20,11 +20,21 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    - name: 还原依赖（指定运行时 win-x64）
-      run: dotnet restore EastSideNEL.slnx -r win-x64
+    - name: 还原依赖（不指定 RID）
+      run: dotnet restore EastSideNEL.slnx
 
-    - name: 构建项目（指定运行时 win-x64）
-      run: dotnet build EastSideNEL.slnx --no-restore -c Release -r win-x64
+    # 按依赖顺序构建各个项目
+    - name: 构建 EastSide.Core
+      run: dotnet build EastSide.Core/EastSide.Core.csproj -c Release -r win-x64 --no-restore
+
+    - name: 构建 EastSide.IRC
+      run: dotnet build EastSide.IRC/EastSide.IRC.csproj -c Release -r win-x64 --no-restore
+
+    - name: 构建 EastSide
+      run: dotnet build EastSide/EastSide.csproj -c Release -r win-x64 --no-restore
+
+    - name: 构建 EastSide.UI（主程序）
+      run: dotnet build EastSide.UI/EastSide.UI.csproj -c Release -r win-x64 --no-restore
 
     - name: 上传构建产物
       uses: actions/upload-artifact@v4
