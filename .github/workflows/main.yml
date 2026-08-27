@@ -20,10 +20,11 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    - name: 还原依赖（不指定 RID）
-      run: dotnet restore EastSideNEL.slnx
+    # 关键：还原时指定运行时标识，使 assets 包含 win-x64 目标
+    - name: 还原依赖（指定运行时 win-x64）
+      run: dotnet restore EastSideNEL.slnx -r win-x64
 
-    # 按依赖顺序构建各个项目
+    # 按依赖顺序构建各个项目，指定运行时 win-x64
     - name: 构建 EastSide.Core
       run: dotnet build EastSide.Core/EastSide.Core.csproj -c Release -r win-x64 --no-restore
 
